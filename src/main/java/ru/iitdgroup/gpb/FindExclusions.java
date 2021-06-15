@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
-public class findexclusions {
+public class FindExclusions {
 
     static Set<String> exclusionsSet = new HashSet<>();
     public static byte[] getSHA(String input) throws NoSuchAlgorithmException {
