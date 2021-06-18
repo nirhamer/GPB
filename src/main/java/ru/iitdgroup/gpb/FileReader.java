@@ -1,14 +1,17 @@
 package ru.iitdgroup.gpb;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -23,10 +26,11 @@ public class FileReader {
      * @throws IOException an Exception that is thrown when there has been an Input/Output (usually when working with files) error.
      */
     static Set<String> exclusionsSet = new HashSet<>();
+    private static MessageDigest fileDigest;
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
-        System.out.println(args.length);
-        for (int i = 0 ; i < args.length; i++) System.out.println(args[i]);
+
+        //region reading the exclusions file
         File myObj = new File("exclusions.txt");
         Scanner exclusionsReader;
         try {
@@ -40,6 +44,16 @@ public class FileReader {
         } catch (FileNotFoundException e) {
             System.out.println("no exclusions.txt file found continuing with the scan");
         }
+        //endregion
+
+        if (args.length == 0) useCase_1();
+        else if (args.length == 1) useCase_2(new File(args[0]));
+        else throw new IllegalArgumentException("Wrong arguments");
+
+    }
+
+    private static void useCase_1() throws NoSuchAlgorithmException, IOException {
+        fileDigest = MessageDigest.getInstance("SHA-256");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         String date = LocalDateTime.now().format(formatter);
         File snapshotFile = new File("./snapshot-" + date + ".txt");
@@ -54,32 +68,30 @@ public class FileReader {
                         e.printStackTrace();
                     }
                 });
-        byte[] data = Files.readAllBytes(snapshotFile.toPath());
 
+        snapshotFileWriter.println("\n" + hash2string(fileDigest.digest()));
+        snapshotFileWriter.close();
+    }
+
+    private static void useCase_2(File snapshotFile) throws NoSuchAlgorithmException, IOException {
+
+        final List<String> allLines = Files.readAllLines(Paths.get(String.valueOf(snapshotFile)));
 
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(data);
-        byte[] hash = md.digest();
-        StringBuilder hexhash = new StringBuilder();
-        for (int i = 0; i < hash.length; i++) {
-            hexhash.append(Integer.toString((hash[i] & 0xff) + 0x100, 16).substring(1));
+        final int SKIP_FILE_HASH_AND_PREV_EMPTY_LINE = 2;
+        for (int i = 0; i < allLines.size() - SKIP_FILE_HASH_AND_PREV_EMPTY_LINE; i++) {
+            String line = allLines.get(i);
+            md.update(line.getBytes(StandardCharsets.UTF_8));
         }
-        snapshotFileWriter.println("\n" + snapshotFile + "\t" + hexhash);
 
-        byte[] comparingData = Files.readAllBytes(snapshotFile.toPath());
+        String newHash = hash2string(md.digest());
+        String oldHash = allLines.get(allLines.size()-1);
 
-        MessageDigest comparingMD = MessageDigest.getInstance("SHA-256");
-        comparingMD.update(comparingData);
-        byte[] comparingHash = comparingMD.digest();
-        StringBuilder comparingHexhash = new StringBuilder();
-        for (int i = 0; i < comparingHash.length; i++) {
-            comparingHexhash.append(Integer.toString((comparingHash[i] & 0xff) + 0x100, 16).substring(1));
-        }
-        if (md==comparingMD){
 
-        }
-        else System.out.println("Snapshot is corrupted");
-        snapshotFileWriter.close();
+        if (oldHash.equals(newHash)) {
+            System.out.println("all is good");
+
+        } else System.out.println("Snapshot is corrupted");
     }
 
     static boolean checkPath(Path path) {
@@ -114,10 +126,20 @@ public class FileReader {
                 for (int i = 0; i < hash.length; i++) {
                     hexhash.append(Integer.toString((hash[i] & 0xff) + 0x100, 16).substring(1));
                 }
-                snapshotFileWriter.println(filename + "\t" + hexhash); // Note "\t is tab, \n is new line, \r is for cartridge return";
+                final String fileNameAndHash = filename + "\t" + hexhash;
+                snapshotFileWriter.println(fileNameAndHash); // Note "\t is tab, \n is new line, \r is for cartridge return";
+                fileDigest.update(fileNameAndHash.getBytes(StandardCharsets.UTF_8));
                 return;
             }
         }
+    }
+
+    public static String hash2string( byte[] hash){
+        StringBuilder hexhash = new StringBuilder();
+        for (int i = 0; i < hash.length; i++) {
+            hexhash.append(Integer.toString((hash[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        return hexhash.toString();
     }
 
 }
