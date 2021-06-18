@@ -31,6 +31,7 @@ public class GPBchecker {
     }
     private static final int BUFFER_SIZE = 4096;
     public static void main(String[] args) {
+        //region reading the exclusion file
         File myObj = new File("exclusions.txt");
         Scanner exclusionsReader;
         try {
@@ -45,6 +46,7 @@ public class GPBchecker {
         } catch (FileNotFoundException e) {
             System.out.println("no exclusions.txt file found continuing with the scan");
         }
+        //endregion
         GPBchecker fw = new GPBchecker();
         fw.walk(".");
         if (args.length < 2) {
