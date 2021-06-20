@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FileReader {
 
@@ -73,7 +75,7 @@ public class FileReader {
         snapshotFileWriter.close();
     }
 
-    private static void useCase_2(File snapshotFile) throws NoSuchAlgorithmException, IOException {
+    private static List<String> useCase_2(File snapshotFile) throws NoSuchAlgorithmException, IOException {
 
         final List<String> allLines = Files.readAllLines(Paths.get(String.valueOf(snapshotFile)));
 
@@ -92,6 +94,20 @@ public class FileReader {
             System.out.println("all is good");
 
         } else System.out.println("Snapshot is corrupted");
+
+        Files.walk(Path.of(AS_ROOT))
+                .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
+                .filter(file -> checkPath(file))
+                .forEach(path -> {
+                });
+
+
+        List<String> result;
+        try (Stream<String> lines = Files.lines(Paths.get(String.valueOf(snapshotFile)))) {
+            result = lines.collect(Collectors.toList());
+        }
+        System.out.println();
+        return result;
     }
 
     static boolean checkPath(Path path) {
