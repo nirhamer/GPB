@@ -53,6 +53,7 @@ public class FileReader {
         else throw new IllegalArgumentException("Wrong arguments");
 
     }
+    // hi how is your day
 
     private static void useCase_1() throws NoSuchAlgorithmException, IOException {
         fileDigest = MessageDigest.getInstance("SHA-256");
