@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class FileReader {
+public class UseCase1 {
 
     private static final int BUFFER_SIZE = 4096; // 4KB
     private static final String AS_ROOT = ".";
