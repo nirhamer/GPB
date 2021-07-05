@@ -1,6 +1,9 @@
 package ru.iitdgroup.gpb;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -8,73 +11,56 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class FileReader {
+public class UseCase2 {
 
     private static final int BUFFER_SIZE = 4096; // 4KB
     private static final String AS_ROOT = ".";
 
-    /**
-     * starts the application/reading the exclusion file
-     * @param args
-     * @throws IOException an Exception that is thrown when there has been an Input/Output (usually when working with files) error.
-     */
-    static Set<String> exclusionsSet = new HashSet<>();
     private static MessageDigest fileDigest;
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+    private static List<String> useCase_2(File snapshotFile) throws NoSuchAlgorithmException, IOException {
 
-        //region reading the exclusions file
-        File myObj = new File("exclusions.txt");
-        Scanner exclusionsReader;
-        try {
-            exclusionsReader = new Scanner(myObj);
+        final List<String> allLines = Files.readAllLines(Paths.get(String.valueOf(snapshotFile)));
 
-            while (exclusionsReader.hasNextLine()) {
-                String data = exclusionsReader.nextLine();
-                exclusionsSet.add(data);
-            }
-            exclusionsReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("no exclusions.txt file found continuing with the scan");
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        final int SKIP_FILE_HASH_AND_PREV_EMPTY_LINE = 2;
+        for (int i = 0; i < allLines.size() - SKIP_FILE_HASH_AND_PREV_EMPTY_LINE; i++) {
+            String line = allLines.get(i);
+            md.update(line.getBytes(StandardCharsets.UTF_8));
         }
-        //endregion
 
-        if (args.length == 0) useCase_1();
-        else throw new IllegalArgumentException("Wrong arguments");
+        String newHash = hash2string(md.digest());
+        String oldHash = allLines.get(allLines.size()-1);
 
-    }
 
-    private static void useCase_1() throws NoSuchAlgorithmException, IOException {
-        fileDigest = MessageDigest.getInstance("SHA-256");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
-        String date = LocalDateTime.now().format(formatter);
-        File snapshotFile = new File("./snapshot-" + date + ".txt");
-        PrintWriter snapshotFileWriter = new PrintWriter(snapshotFile);
+        if (oldHash.equals(newHash)) {
+            System.out.println("all is good");
+
+        } else System.out.println("Snapshot is corrupted");
+
         Files.walk(Path.of(AS_ROOT))
                 .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
                 .filter(file -> checkPath(file))
                 .forEach(path -> {
-                    try {
-                        readFile(path.toString(), snapshotFileWriter);
-                    } catch (IOException | NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
                 });
 
-        snapshotFileWriter.println("\n" + hash2string(fileDigest.digest()));
-        snapshotFileWriter.close();
+
+        List<String> result;
+        try (Stream<String> lines = Files.lines(Paths.get(String.valueOf(snapshotFile)))) {
+            result = lines.collect(Collectors.toList());
+        }
+        System.out.println();
+        return result;
     }
 
     static boolean checkPath(Path path) {
+        Set<String> exclusionsSet = new HashSet<>();
         for (String exclusion : exclusionsSet) {
             if (path.startsWith(exclusion)) {
                 return false;
@@ -121,5 +107,4 @@ public class FileReader {
         }
         return hexhash.toString();
     }
-
 }
