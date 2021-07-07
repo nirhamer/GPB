@@ -107,4 +107,8 @@ public class UseCase2 {
         }
         return hexhash.toString();
     }
+
+    public static void setFileDigest(MessageDigest fileDigest) {
+        UseCase2.fileDigest = fileDigest;
+    }
 }

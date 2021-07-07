@@ -3,22 +3,19 @@ package ru.iitdgroup.gpb;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentBO {
+public class StudentManager {
 
+    ////list is operating the database
     List<StudentVO> students;
-    // StudentVO stands for Student Business objects
-    public StudentBO(){
-        students = new ArrayList<StudentVO>();
+    public StudentManager(){
+        students = new ArrayList<>();
         StudentVO student1 = new StudentVO("Robert",0);
         StudentVO student2 = new StudentVO("John",1);
         students.add(student1);
         students.add(student2);
     }
-    public void deleteStudent(StudentVO student) {
-        students.remove(student.getRollNo());
-        System.out.println("Student: Roll No " + student.getRollNo() + ", deleted from database");
-    }
 
+    //retrieves list of students from the database
     public List<StudentVO> getAllStudents() {
         return students;
     }
