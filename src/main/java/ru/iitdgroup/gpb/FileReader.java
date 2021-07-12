@@ -22,6 +22,8 @@ public class FileReader {
     private static final int BUFFER_SIZE = 4096; // 4KB
     private static final String AS_ROOT = ".";
 
+    //TODO separate scanning/reading function from use case 1 and 2  to its own class and call the function in both classes when needed
+
     /**
      * starts the application/reading the exclusion file
      * @param args
