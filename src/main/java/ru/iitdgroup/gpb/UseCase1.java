@@ -26,27 +26,8 @@ public class UseCase1 {
     static Set<String> exclusionsSet = new HashSet<>();
     private static MessageDigest fileDigest;
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
-
-        //region reading the exclusions file
-        File myObj = new File("exclusions.txt");
-        Scanner exclusionsReader;
-        try {
-            exclusionsReader = new Scanner(myObj);
-
-            while (exclusionsReader.hasNextLine()) {
-                String data = exclusionsReader.nextLine();
-                exclusionsSet.add(data);
-            }
-            exclusionsReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("no exclusions.txt file found continuing with the scan");
-        }
-        //endregion
-
-        if (args.length == 0) useCase_1();
-        else throw new IllegalArgumentException("Wrong arguments");
-
+    public static void main(String[] args) {
+       ScansFilesystem.exclusionsSet();
     }
 
     private static void useCase_1() throws NoSuchAlgorithmException, IOException {
