@@ -24,9 +24,11 @@ public class UseCase2 {
 
     private static MessageDigest fileDigest;
 
-    public static void main(String[] args) {
+     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+         if (args.length == 1) useCase_2(new File(args[0]));
+         else throw new IllegalArgumentException("Wrong arguments");}
 
-    } List<String> useCase_2(File snapshotFile) throws NoSuchAlgorithmException, IOException {
+    static List<String> useCase_2(File snapshotFile) throws NoSuchAlgorithmException, IOException {
 
         final List<String> allLines = Files.readAllLines(Paths.get(String.valueOf(snapshotFile)));
 
