@@ -24,7 +24,9 @@ public class UseCase2 {
 
     private static MessageDigest fileDigest;
 
-    private static List<String> useCase_2(File snapshotFile) throws NoSuchAlgorithmException, IOException {
+    public static void main(String[] args) {
+
+    } List<String> useCase_2(File snapshotFile) throws NoSuchAlgorithmException, IOException {
 
         final List<String> allLines = Files.readAllLines(Paths.get(String.valueOf(snapshotFile)));
 

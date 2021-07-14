@@ -5,13 +5,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class UseCase1 {
 
@@ -26,8 +30,27 @@ public class UseCase1 {
     static Set<String> exclusionsSet = new HashSet<>();
     private static MessageDigest fileDigest;
 
-    public static void main(String[] args) {
-       ScansFilesystem.exclusionsSet();
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+
+        //region reading the exclusions file
+        File myObj = new File("exclusions.txt");
+        Scanner exclusionsReader;
+        try {
+            exclusionsReader = new Scanner(myObj);
+
+            while (exclusionsReader.hasNextLine()) {
+                String data = exclusionsReader.nextLine();
+                exclusionsSet.add(data);
+            }
+            exclusionsReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("no exclusions.txt file found continuing with the scan");
+        }
+        //endregion
+
+        if (args.length == 0) useCase_1();
+        else throw new IllegalArgumentException("Wrong arguments");
+
     }
 
     private static void useCase_1() throws NoSuchAlgorithmException, IOException {
