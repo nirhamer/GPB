@@ -28,12 +28,6 @@ public class UseCase2 {
         final List<String> allLines = Files.readAllLines(Paths.get(String.valueOf(snapshotFile)));
 
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        final int SKIP_FILE_HASH_AND_PREV_EMPTY_LINE = 2;
-        for (int i = 0; i < allLines.size() - SKIP_FILE_HASH_AND_PREV_EMPTY_LINE; i++) {
-            String line = allLines.get(i);
-            md.update(line.getBytes(StandardCharsets.UTF_8));
-        }
-
         String newHash = hash2string(md.digest());
         String oldHash = allLines.get(allLines.size()-1);
 
@@ -41,7 +35,13 @@ public class UseCase2 {
         if (oldHash.equals(newHash)) {
             System.out.println("all is good");
 
-        } else System.out.println("Snapshot is corrupted");
+        }
+        else throw new IOException("Snapshot is corrupted");
+        final int SKIP_FILE_HASH_AND_PREV_EMPTY_LINE = 2;
+        for (int i = 0; i < allLines.size() - SKIP_FILE_HASH_AND_PREV_EMPTY_LINE; i++) {
+            String line = allLines.get(i);
+            md.update(line.getBytes(StandardCharsets.UTF_8));
+        }
 
 
 
@@ -84,11 +84,10 @@ public class UseCase2 {
                     }
                 });
 
-
-
-
          if (args.length == 1) Step2(new File(args[0]));
          else throw new IllegalArgumentException("Wrong arguments");}
+
+
 
 
 
