@@ -1,6 +1,9 @@
 package ru.iitdgroup.gpb;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -10,7 +13,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,15 +21,26 @@ public class UseCase2 {
 
     private static final int BUFFER_SIZE = 4096; // 4KB
     private static final String AS_ROOT = ".";
-    static Set<String> exclusionsSet = new HashSet<>();
+
     private static MessageDigest fileDigest;
 
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+        if (args.length == 1) step_2(new File(args[0]));
+        else throw new IllegalArgumentException("Wrong arguments");}
 
-    static List<String> Step2(File snapshotFile) throws NoSuchAlgorithmException, IOException {
+    static List<String> step_2(File snapshotFile) throws NoSuchAlgorithmException, IOException {
 
         final List<String> allLines = Files.readAllLines(Paths.get(String.valueOf(snapshotFile)));
 
         MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+
+        final int SKIP_FILE_HASH_AND_PREV_EMPTY_LINE = 2;
+        for (int i = 0; i < allLines.size() - SKIP_FILE_HASH_AND_PREV_EMPTY_LINE; i++) {
+            String line = allLines.get(i);
+            md.update(line.getBytes(StandardCharsets.UTF_8));
+        }
+
         String newHash = hash2string(md.digest());
         String oldHash = allLines.get(allLines.size()-1);
 
@@ -35,14 +48,13 @@ public class UseCase2 {
         if (oldHash.equals(newHash)) {
             System.out.println("all is good");
 
-        }
-        else throw new IOException("Snapshot is corrupted");
-        final int SKIP_FILE_HASH_AND_PREV_EMPTY_LINE = 2;
-        for (int i = 0; i < allLines.size() - SKIP_FILE_HASH_AND_PREV_EMPTY_LINE; i++) {
-            String line = allLines.get(i);
-            md.update(line.getBytes(StandardCharsets.UTF_8));
-        }
+        } else throw new IOException("Snapshot is corrupted");
 
+        Files.walk(Path.of(AS_ROOT))
+                .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
+                .filter(file -> checkPath(file))
+                .forEach(path -> {
+                });
 
 
         List<String> result;
@@ -52,44 +64,6 @@ public class UseCase2 {
         System.out.println();
         return result;
     }
-
-
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
-        //region reading the exclusions file
-        File myObj = new File("exclusions.txt");
-        Scanner exclusionsReader;
-        try {
-            exclusionsReader = new Scanner(myObj);
-
-            while (exclusionsReader.hasNextLine()) {
-                String data = exclusionsReader.nextLine();
-                exclusionsSet.add(data);
-            }
-            exclusionsReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("no exclusions.txt file found continuing with the scan");
-        }
-        //endregion
-
-        fileDigest = MessageDigest.getInstance("SHA-256");
-        File snapshotFile = new File("./snapshot-" );
-        Files.walk(Path.of(AS_ROOT))
-                .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
-                .filter(UseCase2::checkPath)
-                .forEach(path -> {
-                    try {
-                        readFile(path.toString(), snapshotFile);
-                    } catch (IOException | NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
-                });
-
-         if (args.length == 1) Step2(new File(args[0]));
-         else throw new IllegalArgumentException("Wrong arguments");}
-
-
-
-
 
     static boolean checkPath(Path path) {
         Set<String> exclusionsSet = new HashSet<>();
@@ -110,7 +84,7 @@ public class UseCase2 {
      * @throws IOException an Exception that is thrown when there has been an Input/Output (usually when working with files) error.
      * @throws NoSuchAlgorithmException an exception that is thrown when a particular cryptographic algorithm is requested but is not available in the environment.
      */
-    public static void readFile(String filename, File snapshotFileWriter) throws IOException, NoSuchAlgorithmException {
+    public static void readFile(String filename, PrintWriter snapshotFileWriter) throws IOException, NoSuchAlgorithmException {
         BufferedInputStream stream = new BufferedInputStream(Files.newInputStream(Path.of(filename)));
         MessageDigest SHA256 = MessageDigest.getInstance("SHA-256");
         while (true) {
@@ -125,6 +99,7 @@ public class UseCase2 {
                     hexhash.append(Integer.toString((hash[i] & 0xff) + 0x100, 16).substring(1));
                 }
                 final String fileNameAndHash = filename + "\t" + hexhash;
+                snapshotFileWriter.println(fileNameAndHash); // Note "\t is tab, \n is new line, \r is for cartridge return";
                 fileDigest.update(fileNameAndHash.getBytes(StandardCharsets.UTF_8));
                 return;
             }
