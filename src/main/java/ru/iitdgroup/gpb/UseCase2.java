@@ -8,6 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -48,11 +50,21 @@ public class UseCase2 {
 
         } else throw new IOException("Snapshot is corrupted");
 
+        fileDigest = MessageDigest.getInstance("SHA-256");
+        PrintWriter snapshotFileWriter = new PrintWriter(snapshotFile);
         Files.walk(Path.of(AS_ROOT))
                 .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
-                .filter(UseCase2::checkPath)
+                .filter(file -> checkPath(file))
                 .forEach(path -> {
+                    try {
+                        readFile(path.toString(), snapshotFileWriter);
+                    } catch (IOException | NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
                 });
+
+        snapshotFileWriter.println("\n" + hash2string(fileDigest.digest()));
+        snapshotFileWriter.close();
 
 
         List<String> result;
@@ -61,6 +73,8 @@ public class UseCase2 {
         }
         System.out.println();
         return result;
+
+
     }
 
     static Set<String> exclusionsSet = new HashSet<>();
