@@ -1,9 +1,6 @@
 package ru.iitdgroup.gpb;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -13,6 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -52,7 +50,7 @@ public class UseCase2 {
 
         Files.walk(Path.of(AS_ROOT))
                 .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
-                .filter(file -> checkPath(file))
+                .filter(UseCase2::checkPath)
                 .forEach(path -> {
                 });
 
@@ -65,6 +63,26 @@ public class UseCase2 {
         return result;
     }
 
+    static Set<String> exclusionsSet = new HashSet<>();
+     {
+        //region reading the exclusions file
+        File myObj = new File("exclusions.txt");
+        Scanner exclusionsReader;
+        try {
+            exclusionsReader = new Scanner(myObj);
+
+            while (exclusionsReader.hasNextLine()) {
+                String data = exclusionsReader.nextLine();
+                exclusionsSet.add(data);
+            }
+            exclusionsReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("no exclusions.txt file found continuing with the scan");
+        }
+        //endregion
+    }
+
+
     static boolean checkPath(Path path) {
         Set<String> exclusionsSet = new HashSet<>();
         for (String exclusion : exclusionsSet) {
@@ -73,6 +91,8 @@ public class UseCase2 {
             }
         }
         return true;
+
+
 
 
     }
