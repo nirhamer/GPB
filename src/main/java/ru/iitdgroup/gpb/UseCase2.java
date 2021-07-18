@@ -47,7 +47,7 @@ public class UseCase2 {
         if (oldHash.equals(newHash)) {
             System.out.println("all is good");
 
-        } else throw new IOException("Snapshot is corrupted");
+        } else throw new IllegalArgumentException("Snapshot is corrupted");
 
         BufferedReader reader1 = new BufferedReader(new FileReader("snapshot-2021-07-18_07-02-38.txt"));
 
