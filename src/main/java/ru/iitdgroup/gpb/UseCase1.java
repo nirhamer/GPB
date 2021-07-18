@@ -57,7 +57,7 @@ public class UseCase1 {
         PrintWriter snapshotFileWriter = new PrintWriter(snapshotFile);
         Files.walk(Path.of(AS_ROOT))
                 .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
-                .filter(file -> checkPath(file))
+                .filter(UseCase1::checkPath)
                 .forEach(path -> {
                     try {
                         readFile(path.toString(), snapshotFileWriter);

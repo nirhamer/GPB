@@ -8,8 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -22,7 +20,7 @@ public class UseCase2 {
     private static final int BUFFER_SIZE = 4096; // 4KB
     private static final String AS_ROOT = ".";
 
-    private static MessageDigest fileDigest;
+    public static MessageDigest fileDigest;
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
         if (args.length == 1) step_2(new File(args[0]));
@@ -54,7 +52,7 @@ public class UseCase2 {
         PrintWriter snapshotFileWriter = new PrintWriter(snapshotFile);
         Files.walk(Path.of(AS_ROOT))
                 .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
-                .filter(file -> checkPath(file))
+                .filter(UseCase2::checkPath)
                 .forEach(path -> {
                     try {
                         readFile(path.toString(), snapshotFileWriter);
@@ -62,6 +60,7 @@ public class UseCase2 {
                         e.printStackTrace();
                     }
                 });
+
 
         snapshotFileWriter.println("\n" + hash2string(fileDigest.digest()));
         snapshotFileWriter.close();
@@ -105,9 +104,6 @@ public class UseCase2 {
             }
         }
         return true;
-
-
-
 
     }
 
