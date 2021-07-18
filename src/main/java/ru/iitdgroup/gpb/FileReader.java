@@ -24,6 +24,7 @@ public class FileReader {
 
     //TODO separate scanning/reading function from use case 1 and 2  to its own class and call the function in both classes when needed
 
+    //TODO exclude the snapshots from the scan
     /**
      * starts the application/reading the exclusion file
      * @param args
