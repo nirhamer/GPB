@@ -58,20 +58,20 @@ public class Test {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         String date = LocalDateTime.now().format(formatter);
         File AS_File = new File("./AS_File-" + date + ".txt");
-        PrintWriter snapshotFileWriter = new PrintWriter(AS_File);
+        PrintWriter DataHolder = new PrintWriter(AS_File);
         Files.walk(Path.of(AS_ROOT))
                 .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
                 .filter(UseCase1::checkPath)
                 .forEach(path -> {
                     try {
-                        readFile(path.toString(), snapshotFileWriter);
+                        readFile(path.toString(), DataHolder);
                     } catch (IOException | NoSuchAlgorithmException e) {
                         e.printStackTrace();
                     }
                 });
 
-        snapshotFileWriter.println("\n" + hash2string(fileDigest.digest()));
-        snapshotFileWriter.close();
+        DataHolder.println("\n" + hash2string(fileDigest.digest()));
+        DataHolder.close();
     }
 
     static boolean checkPath(Path path) {

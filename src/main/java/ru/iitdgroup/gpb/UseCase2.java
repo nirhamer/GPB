@@ -1,6 +1,7 @@
 package ru.iitdgroup.gpb;
 
 import java.io.*;
+import java.io.FileReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -48,22 +49,24 @@ public class UseCase2 {
 
         } else throw new IOException("Snapshot is corrupted");
 
+
         fileDigest = MessageDigest.getInstance("SHA-256");
-        PrintWriter snapshotFileWriter = new PrintWriter(snapshotFile);
+        PrintWriter DataHolder = new PrintWriter(snapshotFile);
         Files.walk(Path.of(AS_ROOT))
                 .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
                 .filter(UseCase2::checkPath)
                 .forEach(path -> {
                     try {
-                        readFile(path.toString(), snapshotFileWriter);
+                        readFile(path.toString(), DataHolder);
                     } catch (IOException | NoSuchAlgorithmException e) {
                         e.printStackTrace();
                     }
                 });
 
 
-        snapshotFileWriter.println("\n" + hash2string(fileDigest.digest()));
-        snapshotFileWriter.close();
+        DataHolder.println("\n" + hash2string(fileDigest.digest()));
+        DataHolder.close();
+
 
 
         List<String> result;
@@ -74,7 +77,65 @@ public class UseCase2 {
         return result;
 
 
+
     }
+
+    public static class CompareTextFiles
+    {
+
+        public static void main(String[] args) throws IOException
+        {
+            BufferedReader reader1 = new BufferedReader(new FileReader("snapshot-2021-07-18_06-12-41.txt"));
+
+            BufferedReader reader2 = new BufferedReader(new FileReader("snapshot-2021-07-18_06-12-41.txt"));
+
+            String line1 = reader1.readLine();
+
+            String line2 = reader2.readLine();
+
+            boolean areEqual = true;
+
+            int lineNum = 1;
+
+            while (line1 != null || line2 != null)
+            {
+                if(line1 == null || line2 == null)
+                {
+                    areEqual = false;
+
+                    break;
+                }
+                else if(! line1.equalsIgnoreCase(line2))
+                {
+                    areEqual = false;
+
+                    break;
+                }
+
+                line1 = reader1.readLine();
+
+                line2 = reader2.readLine();
+
+                lineNum++;
+            }
+
+            if(areEqual)
+            {
+                System.out.println("Two files have same content.");
+            }
+            else
+            {
+                System.out.println("Two files have different content. They differ at line "+lineNum);
+
+                System.out.println("File1 has "+line1+" and File2 has "+line2+" at line "+lineNum);
+            }
+
+            reader1.close();
+
+            reader2.close();
+        }
+    }
+
 
     static Set<String> exclusionsSet = new HashSet<>();
      {
