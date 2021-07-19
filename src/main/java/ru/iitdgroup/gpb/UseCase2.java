@@ -1,7 +1,6 @@
 package ru.iitdgroup.gpb;
 
 import java.io.*;
-import java.io.FileReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -9,10 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,54 +45,19 @@ public class UseCase2 {
 
         } else throw new IllegalArgumentException("Snapshot is corrupted");
 
-        BufferedReader reader1 = new BufferedReader(new FileReader("snapshot-2021-07-18_07-02-38.txt"));
 
-        BufferedReader reader2 = new BufferedReader(new FileReader("snapshot-2021-07-18_07-02-38.txt"));
+        // Create an empty hash map
+        HashMap<File, String> map = new HashMap<>();
 
-        String line1 = reader1.readLine();
+        // Add elements to the map
+        map.put(snapshotFile, " this is the snapshotFile file");
 
-        String line2 = reader2.readLine();
 
-        boolean areEqual = true;
+        // Print size and content
+        System.out.println("Size of map is: "
+                + map.size());
+        System.out.println(map);
 
-        int lineNum = 1;
-
-        while (line1 != null || line2 != null)
-        {
-            if(line1 == null || line2 == null)
-            {
-                areEqual = false;
-
-                break;
-            }
-            else if(! line1.equalsIgnoreCase(line2))
-            {
-                areEqual = false;
-
-                break;
-            }
-
-            line1 = reader1.readLine();
-
-            line2 = reader2.readLine();
-
-            lineNum++;
-        }
-
-        if(areEqual)
-        {
-            System.out.println("Two files have same content.");
-        }
-        else
-        {
-            System.out.println("Two files have different content. They differ at line "+lineNum);
-
-            System.out.println("File1 has "+line1+" and File2 has "+line2+" at line "+lineNum);
-        }
-
-        reader1.close();
-
-        reader2.close();
 
 
         fileDigest = MessageDigest.getInstance("SHA-256");
@@ -124,6 +85,8 @@ public class UseCase2 {
         }
         System.out.println();
         return result;
+
+
 
 
 

@@ -49,7 +49,7 @@ public class UseCase1 {
 
     }
 
-    private static void useCase_1() throws NoSuchAlgorithmException, IOException {
+    public static void useCase_1() throws NoSuchAlgorithmException, IOException {
         fileDigest = MessageDigest.getInstance("SHA-256");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         String date = LocalDateTime.now().format(formatter);
@@ -76,10 +76,15 @@ public class UseCase1 {
                 return false;
             }
         }
+        for (String snapshotFile : exclusionsSet){
+            if (path.startsWith(snapshotFile)) {
+                return false;
+            }
+        }
         return true;
-
-
     }
+
+
 
     /**
      * reads file and calculates its hash and writes all its details to provided PrintWriter
