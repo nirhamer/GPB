@@ -2,7 +2,7 @@ package ru.iitdgroup.gpb;
 
 import java.util.HashMap;
 
-public class GFG {
+public class Map {
 
     public static void main(String[] args)
     {
@@ -10,9 +10,8 @@ public class GFG {
         HashMap<String, Integer> map = new HashMap<>();
 
         // Add elements to the map
-        map.put("vishal", 10);
-        map.put("sachin", 30);
-        map.put("vaibhav", 20);
+        map.put("nero", 10);
+
 
         // Print size and content
         System.out.println("Size of map is:- "
