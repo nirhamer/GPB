@@ -22,9 +22,23 @@ public class FileReader {
     private static final int BUFFER_SIZE = 4096; // 4KB
     private static final String AS_ROOT = ".";
 
-    //TODO separate scanning/reading function from use case 1 and 2  to its own class and call the function in both classes when needed
 
-    //TODO exclude the snapshots from the scan
+    //1 scan the AS_root file system recursively
+    //2 uncertain should the method that responsible for dealing with the exclusion file become its own class or remain a part of the scanning AS_root class
+    //3 checkPath method and exclusionsSet function will be a part of reading the exclusions file class
+    //4 use case 1 method useCase_1 will be split into 2 parts creating the snapshot file
+    //5 reading the AS_ROOT = file system storing the data in a arraylist
+    //6 storing the data in a arraylist
+    //7 creating the snapshot file and writing the collected data into it
+    //8 separate readFile method into its own service class responsible for reading file and calculates its hash
+    //further information will be included above the class name and call
+    //9 use case 2 creating a class for comparing full file path and checksum needed? or
+    //leave class use case 2 method step_2 as is with a slight expend for use case 2 Verify checksums step 3 situation A, B, C,
+
+
+
+
+
     /**
      * starts the application/reading the exclusion file
      * @param args

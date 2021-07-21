@@ -26,6 +26,7 @@ public class UseCase1 {
     static Set<String> exclusionsSet = new HashSet<>();
     private static MessageDigest fileDigest;
 
+    //
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
 
         //region reading the exclusions file
