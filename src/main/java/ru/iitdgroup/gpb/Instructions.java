@@ -9,7 +9,7 @@ public class Instructions {
     // 2 method excluded files that responsible for dealing with the exclusion file will remain a part of the scanning AS_root class.
     //    * Input: noting.
     //    * Output: internal container with a list of excluded files and folders.
-    // 3 checkPath method and exclusionsSet function will be part of scanning AS_root class.
+    // 3 isExcluded method and exclusionsSet function will be part of scanning AS_root class.
     // 4 method snapshot file creating the snapshot file.
     //    * Input: nothing.
     //    * Output: a .txt based file named example (snapshot-2021-07-14_15-20-34.txt)

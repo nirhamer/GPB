@@ -62,7 +62,7 @@ public class FileReader {
         PrintWriter snapshotFileWriter = new PrintWriter(snapshotFile);
         Files.walk(Path.of(AS_ROOT))
                 .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
-                .filter(file -> checkPath(file))
+                .filter(file -> isExcluded(file))
                 .forEach(path -> {
                     try {
                         readFile(path.toString(), snapshotFileWriter);
@@ -105,7 +105,7 @@ public class FileReader {
         return result;
     }
 
-    static boolean checkPath(Path path) {
+    static boolean isExcluded(Path path) {
         for (String exclusion : exclusionsSet) {
             if (path.startsWith(exclusion)) {
                 return false;
