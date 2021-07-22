@@ -23,16 +23,27 @@ public class FileReader {
     private static final String AS_ROOT = ".";
 
 
-    //1 scan the AS_root file system recursively
-    //2 uncertain should the method that responsible for dealing with the exclusion file become its own class or remain a part of the scanning AS_root class
-    //3 checkPath method and exclusionsSet function will be a part of reading the exclusions file class
-    //4 use case 1 method useCase_1 will be split into 2 parts creating the snapshot file
-    //5 reading the AS_ROOT = file system storing the data in a arraylist
-    //6 storing the data in a arraylist
-    //7 creating the snapshot file and writing the collected data into it
-    //8 separate readFile method into its own service class responsible for reading file and calculates its hash
+    //TODO add input and output to each step and batter define all of use case 2
+    //1 scan the AS_root file system recursively.
+    //    * Input: AS root path as String, exclusions file path as String.
+    //    * Output: a List of scanned files as ArrayList<String>
+    //        -OR- the List<ScannedFile>, where ScannedFile contains fileNameAndPath:String and hash:String. Hash will be null at thus step
+    //2 method excluded files that responsible for dealing with the exclusion file will remain a part of the scanning AS_root class
+    //2.1 method excluded files
+    //    * Input: noting
+    //    * output: internal container with a list of excluded files and folders
+    //3 checkPath method and exclusionsSet function will be part of scanning AS_root class
+    //3.1 method checkPath
+    //    * input:
+    //    * output:
+    //3.2 function exclusionsSet
+    //    * input:
+    //    * output:
+    //4 use case 1 method useCase_1 will be split into 2 parts creating the snapshot file.
+    //5 creating the snapshot file and writing the collected data into it
+    //6 separate readFile method into its own service class responsible for reading file and calculates its hash
     //further information will be included above the class name and call
-    //9 use case 2 creating a class for comparing full file path and checksum needed? or
+    //7 use case 2 creating a class for comparing full file path and checksum needed? or
     //leave class use case 2 method step_2 as is with a slight expend for use case 2 Verify checksums step 3 situation A, B, C,
 
 
@@ -112,11 +123,6 @@ public class FileReader {
 
         } else System.out.println("Snapshot is corrupted");
 
-        Files.walk(Path.of(AS_ROOT))
-                .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
-                .filter(file -> checkPath(file))
-                .forEach(path -> {
-                });
 
 
         List<String> result;
