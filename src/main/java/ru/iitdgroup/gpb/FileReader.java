@@ -26,7 +26,7 @@ public class FileReader {
     //TODO add input and output to each step and batter define all of use case 2
 
     //use case 1 start
-    //1 scan the AS_root file system recursively.
+    //1 class scan will scan the AS_root file system recursively.
     //    * Input: AS root path as String, exclusions file path as String.
     //    * Output: a List of scanned files as ArrayList<String>
     //        -OR- the List<ScannedFile>, where ScannedFile contains fileNameAndPath:String and hash:String. Hash will be null at thus step
@@ -35,9 +35,6 @@ public class FileReader {
     //    * Input: noting
     //    * output: internal container with a list of excluded files and folders
     //3 checkPath method and exclusionsSet function will be part of scanning AS_root class
-    //3.1 method checkPath
-    //    * input:
-    //    * output:
     //4 method snapshot file creating the snapshot file
     //    * Input: nothing
     //    * Output: a .txt based file named example (snapshot-2021-07-14_15-20-34.txt)
@@ -49,8 +46,16 @@ public class FileReader {
     //use case 1 end
 
     // use case 2 start
-    //6 use case 2 creating a class for comparing full file path and checksum needed? or
-    //leave class use case 2 method step_2 as is with a slight expend for use case 2 Verify checksums step 3 situation A, B, C,
+    //6 class compares
+    // addressing step 2 will compare snapshot calculated value/(last line) vs read/(total hash of all read lines)
+    //    * input: snapshot as file
+    //    * output:move to step 7. If there is a difference it prints a standard error message ("Snapshot is corrupted")
+    //7 call upon scan class to once again scan the AS_root file system
+    //    * Input: scanner class
+    //    * Output A: ignore the file and move on
+    //    * Output B: stores its full path in a separate list of changed files and mark the row from the snapshot file as Processed
+    //    * Output C: the app will store its full path in a separate list of new files
+
 
 
 
