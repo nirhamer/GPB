@@ -24,6 +24,8 @@ public class FileReader {
 
 
     //TODO add input and output to each step and batter define all of use case 2
+
+    //use case 1 start
     //1 scan the AS_root file system recursively.
     //    * Input: AS root path as String, exclusions file path as String.
     //    * Output: a List of scanned files as ArrayList<String>
@@ -36,14 +38,18 @@ public class FileReader {
     //3.1 method checkPath
     //    * input:
     //    * output:
-    //3.2 function exclusionsSet
-    //    * input:
-    //    * output:
-    //4 use case 1 method useCase_1 will be split into 2 parts creating the snapshot file.
-    //5 creating the snapshot file and writing the collected data into it
-    //6 separate readFile method into its own service class responsible for reading file and calculates its hash
-    //further information will be included above the class name and call
-    //7 use case 2 creating a class for comparing full file path and checksum needed? or
+    //4 method snapshot file creating the snapshot file
+    //    * Input: nothing
+    //    * Output: a .txt based file named example (snapshot-2021-07-14_15-20-34.txt)
+    //5 method readFile into its own service class responsible for reading the arraylist data and calculates its hashes
+    // @param filename is a String that represents the name of the file in this case being snapshot
+    // @param snapshotFileWriter is a PrintWriter that allows us to to write formatted data to an underlying Writer For instance writing the data of filename and the hexhash
+    //    * Input: reads the arraylist file/data
+    //    * Output: calculates the file hashes
+    //use case 1 end
+
+    // use case 2 start
+    //6 use case 2 creating a class for comparing full file path and checksum needed? or
     //leave class use case 2 method step_2 as is with a slight expend for use case 2 Verify checksums step 3 situation A, B, C,
 
 
@@ -147,7 +153,7 @@ public class FileReader {
     /**
      * reads file and calculates its hash and writes all its details to provided PrintWriter
      * @param filename is a String that represents the name of the file in this case being snapshot
-     * @param snapshotFileWriter is a class that allows us to to write formatted data to an underlying Writer For instance writing the data of filename and the hexhash
+     * @param snapshotFileWriter is a PrintWriter that allows us to to write formatted data to an underlying Writer For instance writing the data of filename and the hexhash
      * @throws IOException an Exception that is thrown when there has been an Input/Output (usually when working with files) error.
      * @throws NoSuchAlgorithmException an exception that is thrown when a particular cryptographic algorithm is requested but is not available in the environment.
      */
