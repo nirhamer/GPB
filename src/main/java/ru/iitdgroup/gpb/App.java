@@ -76,8 +76,6 @@ public class App {
         Scanner exclusionsReader;
         try {
             exclusionsReader = new Scanner(myObj);
-
-
             while (exclusionsReader.hasNextLine()) {
                 String data = exclusionsReader.nextLine();
                 set.add(data);
