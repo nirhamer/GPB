@@ -7,8 +7,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ScanFileSystem {
 
@@ -35,11 +38,13 @@ public class ScanFileSystem {
     }
 
 
-    public void walk(String path) throws IOException {
+    public void walk() throws IOException {
 
-        Files.walk(Path.of(AS_ROOT));
+        Stream<Path> s = Files.walk(Path.of(AS_ROOT));
 
+        List<Path> myList = s.collect(Collectors.toList());
 
-
+        System.out.println(myList);
     }
+
 }
