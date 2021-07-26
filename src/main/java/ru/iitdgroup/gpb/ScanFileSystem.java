@@ -3,6 +3,8 @@ package ru.iitdgroup.gpb;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -33,27 +35,11 @@ public class ScanFileSystem {
     }
 
 
-    public void walk( String path ) {
+    public void walk(String path) throws IOException {
 
-        File root = new File( path );
-        File[] list = root.listFiles();
-        if (list == null) return;
+        Files.walk(Path.of(AS_ROOT));
 
-        for ( File f : list ) {
-            if ( f.isDirectory() ) {
-                walk( f.getAbsolutePath() );
-                System.out.println( "Dir:" + f.getAbsoluteFile() );
-            }
-            else {
-                System.out.println( "File:" + f.getAbsoluteFile() );
-            }
-        }
-    }
 
-     static {
-        ScanFileSystem fw = new ScanFileSystem();
-        fw.walk(AS_ROOT );
 
     }
-
 }
