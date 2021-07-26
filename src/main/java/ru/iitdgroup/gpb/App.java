@@ -51,7 +51,7 @@ public class App {
 
         for ( File f : list ) {
             System.out.println("\n" + f.getName() + " : "  );
-            if (set.contains(f.getName())) { continue; }
+            if (exclusionsSet.contains(f.getName())) { continue; }
             if ( f.isDirectory() ) {
                 walk( f.getAbsolutePath() );
                 System.out.println( "Dir:" + f.getAbsoluteFile() );
@@ -70,7 +70,7 @@ public class App {
             }
         }
     }
-    static HashSet<String> set = new HashSet<>();
+    static Set<String> exclusionsSet = new HashSet<>();
     public static void main(String[] args) {
         File myObj = new File("exclusions.txt");
         Scanner exclusionsReader;
@@ -78,7 +78,7 @@ public class App {
             exclusionsReader = new Scanner(myObj);
             while (exclusionsReader.hasNextLine()) {
                 String data = exclusionsReader.nextLine();
-                set.add(data);
+                exclusionsSet.add(data);
             }
             exclusionsReader.close();
         } catch (FileNotFoundException e)  {

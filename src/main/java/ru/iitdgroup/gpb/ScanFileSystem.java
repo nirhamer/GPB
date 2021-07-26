@@ -3,18 +3,18 @@ package ru.iitdgroup.gpb;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
 public class ScanFileSystem {
-    private static final String AS_ROOT = ".";
-    static Set<String> exclusionsSet = new HashSet<>();
 
-    static {
+    static Set<String> exclusionsSet = new HashSet<>();
+    private static final String AS_ROOT = ".";
+
+    public static void main(String[] args) {
+
         //region reading the exclusions file
         File myObj = new File("exclusions.txt");
         Scanner exclusionsReader;
@@ -33,11 +33,27 @@ public class ScanFileSystem {
     }
 
 
+    public void walk( String path ) {
 
+        File root = new File( path );
+        File[] list = root.listFiles();
+        if (list == null) return;
 
-    public void walk(String path) throws IOException {
+        for ( File f : list ) {
+            if ( f.isDirectory() ) {
+                walk( f.getAbsolutePath() );
+                System.out.println( "Dir:" + f.getAbsoluteFile() );
+            }
+            else {
+                System.out.println( "File:" + f.getAbsoluteFile() );
+            }
+        }
+    }
 
-        Files.walk(Path.of(AS_ROOT));
+     static {
+        ScanFileSystem fw = new ScanFileSystem();
+        fw.walk(AS_ROOT );
 
     }
+
 }

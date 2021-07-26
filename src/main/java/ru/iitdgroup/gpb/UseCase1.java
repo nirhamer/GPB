@@ -78,8 +78,6 @@ public class UseCase1 {
             }
         }
         return true;
-
-
     }
 
     /**
