@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -18,8 +19,8 @@ public class ScanFileSystem {
     static Set<String> exclusionsSet = new HashSet<>();
     private static final String AS_ROOT = ".";
 
-    public static void getExcludedFiles(String[] args) {
-
+    public static void getExcludedFiles(String[] args) throws IOException {
+        final List<String> lines = Files.readAllLines(Paths.get("exclusions.txt"));
         //region reading the exclusions file
         File myObj = new File("exclusions.txt");
         Scanner exclusionsReader;
@@ -43,7 +44,7 @@ public class ScanFileSystem {
 
         Stream<Path> s = Files.walk(Path.of(AS_ROOT));
 
-        List<Path> myList = s.collect(Collectors.toList());
+        List<Path> myList = s.collect(Collectors.toList()); //TODO add filtering for folders
 
     }
 
