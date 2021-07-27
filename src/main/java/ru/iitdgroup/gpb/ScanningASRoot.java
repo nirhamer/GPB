@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ScanFileSystem {
+public class ScanningASRoot {
 
     static Set<String> exclusionsSet = new HashSet<>();
     private static final String AS_ROOT = ".";
@@ -45,12 +45,12 @@ public class ScanFileSystem {
 
         Stream<Path> st = Files.walk(Path.of(AS_ROOT))
                 .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
-                .filter(ScanFileSystem::checkPath);
+                .filter(ScanningASRoot::isExcluded);
 
-        List<Path> myList = st.collect(Collectors.toList()); //TODO add filtering for folders
+        List<Path> myList = st.collect(Collectors.toList());
 
     }
-    static boolean checkPath(Path path) {
+    static boolean isExcluded(Path path) {
         for (String exclusion : exclusionsSet) {
             if (path.startsWith(exclusion)) {
                 return false;
