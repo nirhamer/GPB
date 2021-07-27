@@ -47,7 +47,6 @@ public class SnapshotFileCreator {
 
 
 
-
     public static void Creator(String[] args) throws NoSuchAlgorithmException, FileNotFoundException {
         MessageDigest fileDigest = MessageDigest.getInstance("SHA-256");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
