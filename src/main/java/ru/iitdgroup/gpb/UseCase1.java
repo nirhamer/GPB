@@ -55,7 +55,7 @@ public class UseCase1 {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         String date = LocalDateTime.now().format(formatter);
         File snapshotFile = new File("./snapshot-" + date + ".txt");
-        PrintWriter snapshotFileWriter = new PrintWriter(date);
+        PrintWriter snapshotFileWriter = new PrintWriter(snapshotFile);
         Files.walk(Path.of(AS_ROOT))
                 .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
                 .filter(UseCase1::checkPath)
