@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -15,7 +16,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ScanningASRoot {
+import static ru.iitdgroup.gpb.SnapshotFileCreator.readFile;
+
+public class ScanFileSystem {
 
     static Set<String> exclusionsSet = new HashSet<>();
     private static final String AS_ROOT = ".";
@@ -40,18 +43,18 @@ public class ScanningASRoot {
     }
 
 
-
     public static void main(String[] args) throws IOException {
 
 
         Stream<Path> st = Files.walk(Path.of(AS_ROOT))
                 .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
-                .filter(ScanningASRoot::isExcluded);
+                .filter(UseCase1::checkPath);
+
 
         List<Path> myList = st.collect(Collectors.toList());
 
     }
-    static boolean isExcluded(Path path) {
+    static boolean checkPath(Path path) {
         for (String exclusion : exclusionsSet) {
             if (path.startsWith(exclusion)) {
                 return false;
