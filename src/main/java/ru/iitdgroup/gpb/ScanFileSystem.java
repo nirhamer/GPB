@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -16,17 +15,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ru.iitdgroup.gpb.SnapshotFileCreator.readFile;
-
 public class ScanFileSystem {
 
     static Set<String> exclusionsSet = new HashSet<>();
     private static final String AS_ROOT = ".";
 
     public static void getExcludedFiles(String[] args) throws IOException {
-        final List<String> lines = Files.readAllLines(Paths.get("exclusion.txt"));
+        final List<String> lines = Files.readAllLines(Paths.get("exclusions.txt"));
         //region reading the exclusions file
-        File myObj = new File("exclusion.txt");
+        File myObj = new File("exclusions.txt");
         Scanner exclusionsReader;
         try {
             exclusionsReader = new Scanner(myObj);
@@ -50,17 +47,6 @@ public class ScanFileSystem {
                 .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS))
                 .filter(UseCase1::checkPath);
 
-
         List<Path> myList = st.collect(Collectors.toList());
-
     }
-    static boolean checkPath(Path path) {
-        for (String exclusion : exclusionsSet) {
-            if (path.startsWith(exclusion)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 }
