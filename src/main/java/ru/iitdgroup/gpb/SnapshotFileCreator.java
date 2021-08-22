@@ -47,7 +47,6 @@ public class SnapshotFileCreator {
         }
     }
 
-
     public static String hash2string( byte[] hash){
         StringBuilder hexhash = new StringBuilder();
         for (int i = 0; i < hash.length; i++) {
