@@ -85,11 +85,6 @@ public class UseCase2 {
         }
         System.out.println();
         return result;
-
-
-
-
-
     }
     
 
@@ -127,7 +122,7 @@ public class UseCase2 {
     /**
      * reads file and calculates its hash and writes all its details to provided PrintWriter
      * @param filename is a String that represents the name of the file in this case being snapshot
-     * @param snapshotFileWriter is a class that allows us to to write formatted data to an underlying Writer For instance writing the data of filename and the hexhash
+     * @param snapshotFileWriter is a class that allows us to write formatted data to an underlying Writer For instance writing the data of filename and the hexhash
      * @throws IOException an Exception that is thrown when there has been an Input/Output (usually when working with files) error.
      * @throws NoSuchAlgorithmException an exception that is thrown when a particular cryptographic algorithm is requested but is not available in the environment.
      */

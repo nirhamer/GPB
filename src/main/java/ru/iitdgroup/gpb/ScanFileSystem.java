@@ -4,13 +4,8 @@ package ru.iitdgroup.gpb;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -18,15 +13,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ru.iitdgroup.gpb.App.toHexString;
-
 public class ScanFileSystem {
 
     static Set<String> exclusionsSet = new HashSet<>();
     private static final String AS_ROOT = ".";
 
-    public static void getExcludedFiles(String[] args) throws IOException {
-        final List<String> lines = Files.readAllLines(Paths.get("exclusions.txt"));
+    public  void ignore() {
+
         //region reading the exclusions file
         File myObj = new File("exclusions.txt");
         Scanner exclusionsReader;
@@ -44,41 +37,34 @@ public class ScanFileSystem {
         //endregion
     }
 
-    public static byte[] getSHA(String input) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
 
-        return md.digest(input.getBytes(StandardCharsets.UTF_8));
+    public static void main(String[] args) {
+        File currentDir = new File(AS_ROOT);
+        displayDirectoryContents(currentDir);
     }
 
-
-    public void walk( String path ) {
-        File root = new File( path );
-        File[] list = root.listFiles();
-
-
-        if (list == null) return;
-
-        for ( File f : list ) {
-            System.out.println("\n" + f.getName() + " : "  );
-            if (exclusionsSet.contains(f.getName())) { continue; }
-            if ( f.isDirectory() ) {
-                walk( f.getAbsolutePath() );
-                System.out.println( "Dir:" + f.getAbsoluteFile() );
-            }
-            else {
-                new StringBuilder();
-                try {
-                    Scanner myReader = new Scanner(f);
-                    System.out.println("\n" + f.getName() + " : " + toHexString(getSHA("")));
-                    myReader.close();
-                } catch (FileNotFoundException | NoSuchAlgorithmException e) {
-                    System.out.println("An error occurred.");
-                    e.printStackTrace();
+    public static void displayDirectoryContents(File dir) {
+        try {
+            File[] files = dir.listFiles();
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    System.out.println("directory:" + file.getCanonicalPath());
+                    displayDirectoryContents(file);
+                } else {
+                    System.out.println("file:" + file.getCanonicalPath());
                 }
-                System.out.println( "File:" + f.getAbsoluteFile() );
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    static boolean checkPath(Path path) {
+        for (String exclusion : exclusionsSet) {
+            if (path.startsWith(exclusion)) {
+                return false;
             }
         }
-        App fw = new App();
-        fw.walk("." );
+        return true;
     }
+
 }
