@@ -40,7 +40,7 @@ public class SnapshotFileCreator {
                     hexhash.append(Integer.toString((hash[i] & 0xff) + 0x100, 16).substring(1));
                 }
                 final String fileNameAndHash = filename + "\t" + hexhash;
-                snapshotFileWriter.println(fileNameAndHash); // Note "\t is tab, \n is new line, \r is for cartridge return";
+                snapshotFileWriter.println(fileNameAndHash);
                 fileDigest.update(fileNameAndHash.getBytes(StandardCharsets.UTF_8));
                 return;
             }

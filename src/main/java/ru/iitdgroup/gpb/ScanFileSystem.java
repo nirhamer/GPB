@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -18,10 +20,10 @@ public class ScanFileSystem {
     static Set<String> exclusionsSet = new HashSet<>();
     private static final String AS_ROOT = ".";
 
-    public  void ignore() {
-
+    public static void getExcludedFiles(String[] args) throws IOException {
+        final List<String> lines = Files.readAllLines(Paths.get("exclusion.txt"));
         //region reading the exclusions file
-        File myObj = new File("exclusions.txt");
+        File myObj = new File("exclusion.txt");
         Scanner exclusionsReader;
         try {
             exclusionsReader = new Scanner(myObj);
@@ -38,25 +40,15 @@ public class ScanFileSystem {
     }
 
 
-    public static void main(String[] args) {
-        File currentDir = new File(AS_ROOT);
-        displayDirectoryContents(currentDir);
-    }
+    public static void main(String[] args) throws IOException {
 
-    public static void displayDirectoryContents(File dir) {
-        try {
-            File[] files = dir.listFiles();
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    System.out.println("directory:" + file.getCanonicalPath());
-                    displayDirectoryContents(file);
-                } else {
-                    System.out.println("file:" + file.getCanonicalPath());
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        Stream<Path> st = Files.walk(Path.of(AS_ROOT))
+                .filter(s -> Files.isRegularFile(s, LinkOption.NOFOLLOW_LINKS));
+
+
+        List<Path> myList = st.collect(Collectors.toList());
+
     }
     static boolean checkPath(Path path) {
         for (String exclusion : exclusionsSet) {
